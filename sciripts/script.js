@@ -39,5 +39,19 @@ document.querySelector("#b-dot")
         refreshDisplayIn();
     });
 
+document.querySelector("#b-backspace")
+    .addEventListener("click", (event) => {
+        if(calculator.displayIn !== ""){
+            calculator.displayIn = calculator.displayIn.length >= 2
+                ? calculator.displayIn.slice(0, calculator.displayIn.length - 1)
+                : "";
+        }
+        refreshDisplayIn();
+    });
+
 calculator.displayIn = "89+";
 refreshDisplayIn();
+
+console.log(
+    "12".slice(0,1)
+);
