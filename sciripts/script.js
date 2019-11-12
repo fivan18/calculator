@@ -8,35 +8,88 @@ const calculator = {
     displayOur: ""
 };
 
+const validations = {
+    "1":{
+        lastChar: [],
+        lastItem: null
+    },
+    "2":{
+        lastChar: [],
+        lastItem: null
+    },
+    "3":{
+        lastChar: [],
+        lastItem: null
+    },
+    "4":{
+        lastChar: [],
+        lastItem: null
+    },
+    "5":{
+        lastChar: [],
+        lastItem: null
+    },
+    "6":{
+        lastChar: [],
+        lastItem: null
+    },
+    "7":{
+        lastChar: [],
+        lastItem: null
+    },
+    "8":{
+        lastChar: [],
+        lastItem: null
+    },
+    "9":{
+        lastChar: [],
+        lastItem: null
+    },
+    "0":{
+        lastChar: [],
+        lastItem: null
+    },
+    ".":{
+        lastChar: [],
+        lastItem: /^\d*\.\d*$/
+    },
+    "+":{
+        lastChar: ["+", "-"],
+        lastItem: /^\.$/
+    },
+    "-":{
+        lastChar: ["+", "-"],
+        lastItem: /^\.$/
+    },
+    "/":{
+        lastChar: ["+", "-", "/", "*", undefined],
+        lastItem: /^\.$/
+    },
+    "*":{
+        lastChar: ["+", "-", "/", "*", undefined],
+        lastItem: /^\.$/
+    }   
+};
 
-Array.from(document.querySelectorAll("#numbers > button"))
-    .filter((button) => button.innerText !== "." && button.innerText !== "=")
-    .forEach((number) => {
-        number.addEventListener("click", (event) => {
+Array.from(document.querySelectorAll("button"))
+    .filter((button) => button.innerText !== "=" && button.innerText !== "backspace")
+    .forEach((button) => {
+        button.addEventListener("click", (event) => {
+            const innerText = event.target.innerText;
+            const lastChar = calculator.displayIn[calculator.displayIn.length - 1];
+            const arrDisplayIn = calculator.displayIn.split(/[\+\*\-\/]/);
+            const lastItem = arrDisplayIn[arrDisplayIn.length - 1];
+            if(validations[innerText].lastChar.includes(lastChar)){
+                return;
+            }
+            if(validations[innerText].lastItem){
+                if(validations[innerText].lastItem.test(lastItem)) {
+                    return;
+                }
+            }
             calculator.displayIn += event.target.innerText;
             refreshDisplayIn();
         });
-    });
-
-document.querySelector("#b-dot")
-    .addEventListener("click", (event) => {
-        const arrDisplayIn = calculator.displayIn.split(/[\+\*\-\/]/);
-        const lastItem = arrDisplayIn[arrDisplayIn.length - 1];
-        if (
-            calculator.displayIn === ""
-            ){
-            calculator.displayIn += ".";
-        } else if(
-            /[\+\*\-\/]/.test(calculator.displayIn[calculator.displayIn.length - 1])
-            ) {
-            calculator.displayIn += ".";
-        } else if(
-            /[0-9]/.test(lastItem[lastItem.length - 1]) &&
-            !/\./g.test(lastItem)
-        ){
-            calculator.displayIn += ".";
-        }
-        refreshDisplayIn();
     });
 
 document.querySelector("#b-backspace")
@@ -49,9 +102,7 @@ document.querySelector("#b-backspace")
         refreshDisplayIn();
     });
 
-calculator.displayIn = "89+";
-refreshDisplayIn();
-
+let str = "";
 console.log(
-    "12".slice(0,1)
+    str[str.length - 1]
 );
