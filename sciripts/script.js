@@ -3,6 +3,39 @@ function refreshDisplayIn(){
         .innerText = calculator.displayIn;
 }
 
+function getStrAsArr(str){
+    const numbers = str.split(/[\+\*\-\/]/);
+    const operators = str.split(/\d+\.\d+|\d+\.|\.\d+|\d+/)
+        .filter((val) => val !== "")   
+        .join("")
+        .split("");
+    const arrStr = [numbers.shift()];
+    while(numbers.length > 0){
+        arrStr.push(operators.shift());
+        arrStr.push(numbers.shift());
+    }
+
+    while(
+        arrStr[arrStr.length - 1] === "" ||
+        /^[\+\*\-\/\.]$/.test(arrStr[arrStr.length - 1])
+    ) {
+        arrStr.pop();
+    }
+
+    const returnArrStr = [];
+    let i = 0;
+    while(i < arrStr.length){
+        if(arrStr[i] === ""){
+            returnArrStr.push(arrStr[i+1] + arrStr[i+2]);
+            i = i + 3;
+        }else {
+            returnArrStr.push(arrStr[i]);
+            i++;
+        }
+    }
+    return returnArrStr;
+}
+
 const calculator = {
     displayIn: "",
     displayOur: ""
@@ -102,7 +135,6 @@ document.querySelector("#b-backspace")
         refreshDisplayIn();
     });
 
-let str = "";
-console.log(
-    str[str.length - 1]
-);
+
+
+//module.exports = getStrAsArr
