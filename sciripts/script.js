@@ -70,23 +70,38 @@ function validateDivisionByZero(strAsArr){
     return false;
 }
 
-function computeOperation(operation, strAsArr){
-    let i;
+function computeOperations(strAsArr, operation1, operation2){
+    console.log(strAsArr);
+    let index1 = strAsArr.indexOf(operation1);
+    let index2 = strAsArr.indexOf(operation2);
     while(
-        (i = strAsArr.indexOf(operation)) !== -1
+        index1 !== -1 ||
+        index2 !== -1
     ){
-        const result = calculator[operation](strAsArr[i - 1], strAsArr[i + 1]);
-        strAsArr.splice(i - 1, 3, result);
+        console.log(index1);
+        console.log(index2);
+        const index = index1 < index2 
+            ? index1 !== -1
+                ? index1
+                : index2
+            : index2 !== -1
+                ? index2
+                : index1;
+        const operation = index === index1 ? operation1 : operation2;
+        const result = calculator[operation](strAsArr[index - 1], strAsArr[index + 1]);
+        strAsArr.splice(index - 1, 3, result);
+
+        console.log(strAsArr);
+        index1 = strAsArr.indexOf(operation1);
+        index2 = strAsArr.indexOf(operation2);
     }
 }
 
 function computeResult(strAsArr){
     strAsArr = strAsArr.map((val) => !/^[\+\*\-\/]$/.test(val) ? Number(val) : val);
 
-    computeOperation("/", strAsArr);
-    computeOperation("*", strAsArr);
-    computeOperation("+", strAsArr);
-    computeOperation("-", strAsArr);
+    computeOperations(strAsArr, "/", "*");
+    computeOperations(strAsArr, "+", "-");
 
     return strAsArr[0];
 }
