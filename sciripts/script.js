@@ -182,18 +182,16 @@ Array.from(document.querySelectorAll("button"))
     .filter((button) => button.innerText !== "=" && button.innerText !== "backspace")
     .forEach((button) => {
         button.addEventListener("click", (event) => {
-            if(calculator.displayOut !== ""){
-                if(calculator.displayOut !== "Can't divide by zero"){
+            if(
+                calculator.displayOut !== "" &&
+                calculator.displayOut !== "Can't divide by zero" 
+            ){
+                if(/^[\/\*\-\+]$/.test(event.target.innerText)){
                     calculator.displayIn = calculator.displayOut +
                         event.target.innerText;
-        
-                    calculator.displayOut = "";
-                    refreshDisplayOut();
-                }
-                else {
-                    // This could be a mess 
-                    return;
-                }
+                } else {
+                    calculator.displayIn = event.target.innerText;  
+                } 
             } else {
                 const innerText = event.target.innerText;
                 const lastChar = calculator.displayIn[calculator.displayIn.length - 1];
@@ -210,6 +208,9 @@ Array.from(document.querySelectorAll("button"))
                 calculator.displayIn += event.target.innerText;
             }
             refreshDisplayIn();
+
+            calculator.displayOut = "";
+            refreshDisplayOut();
         });
     });
 
@@ -219,34 +220,26 @@ document.querySelector("#b-backspace")
             calculator.displayIn = calculator.displayIn.length >= 2
                 ? calculator.displayIn.slice(0, calculator.displayIn.length - 1)
                 : "";
+            refreshDisplayIn();
+
+            calculator.displayOut = "";
+            refreshDisplayOut();
         }
-        refreshDisplayIn();
     });
 
 document.querySelector("#b-equal")
     .addEventListener("click", (event) => {
         const strAsArr = getStrAsArr(calculator.displayIn);
-        if(calculator.displayOut !== ""){
-            if(calculator.displayOut !== "Can't divide by zero"){
-                calculator.displayIn = calculator.displayOut;
-                refreshDisplayIn();
-    
-                calculator.displayOut = "";
+        if(strAsArr.length === 0) {
+            calculator.displayOut = "";
+        } else if(strAsArr.length === 1){
+            calculator.displayOut = strAsArr[0];
+        } else if(strAsArr.length > 1){
+            if(validateDivisionByZero(strAsArr)){
+                calculator.displayOut = "Can't divide by zero";
             } else {
-                // This could be a mess 
-                return;
-            }
-        } else{
-            if(strAsArr.length === 0) {
-                calculator.displayOut = "";
-            } else if(strAsArr.length === 1){
-                calculator.displayOut = strAsArr[0];
-            } else if(strAsArr.length > 1){
-                if(validateDivisionByZero(strAsArr)){
-                    calculator.displayOut = "Can't divide by zero";
-                } else {
-                    calculator.displayOut = computeResult(strAsArr).toString();
-                }
+                calculator.displayOut = (Math.round(computeResult(strAsArr) * 1000) / 1000)
+                    .toString();
             }
         }
         refreshDisplayOut();
